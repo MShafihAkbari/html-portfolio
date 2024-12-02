@@ -3,10 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Generate PDF Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        #generate-pdf {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        #generate-pdf:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello World</h1>
-    <h1>Hello World</h1>
+
+    <div class="content">
+        <h1>Welcome to My GitHub Page</h1>
+        <p>This is a sample webpage hosted on GitHub Pages. Click the button below to generate a PDF document.</p>
+        <button id="generate-pdf">Generate PDF</button>
+    </div>
+
+    <!-- Include jsPDF from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        document.getElementById('generate-pdf').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Add content to the PDF
+            doc.text("Welcome to my GitHub page!", 20, 30);
+            doc.text("This PDF was generated using JavaScript and the jsPDF library.", 20, 40);
+            doc.text("You can customize the content and layout as you like.", 20, 50);
+
+            // Adding a little bit of style with a header
+            doc.setFontSize(14);
+            doc.text("Custom Header Example", 20, 70);
+            doc.setFontSize(12);
+            doc.text("This is a simple example of using jsPDF to generate a PDF file directly from a webpage hosted on GitHub Pages.", 20, 80);
+
+            // Save the generated PDF
+            doc.save('generated-file.pdf');
+        });
+    </script>
+
 </body>
 </html>
