@@ -3,78 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate PDF Example</title>
+    <title>Fetch Data with Brython</title>
+    <!-- Include Brython -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
             margin: 0;
-            padding: 0;
-        }
-        .content {
-            max-width: 600px;
-            margin: 0 auto;
             padding: 20px;
-            text-align: center;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            background-color: #f4f4f9;
         }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        p {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        #generate-pdf {
+        button {
             padding: 10px 20px;
-            background-color: #007BFF;
+            background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
             font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
         }
-        #generate-pdf:hover {
-            background-color: #0056b3;
+        button:hover {
+            background-color: #45a049;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e0f7fa;
+            border: 1px solid #80deea;
         }
     </style>
 </head>
-<body>
+<body onload="brython()">
+    <h1>Fetch Data with Python in the Browser</h1>
+    
+    <button id="fetchBtn">Fetch Data</button>
+    
+    <div id="output"></div>
 
-    <div class="content">
-        <h1>Welcome to My GitHub Page</h1>
-        <p>This is a sample webpage hosted on GitHub Pages. Click the button below to generate a PDF document.</p>
-        <button id="generate-pdf">Generate PDF</button>
-    </div>
+    <script type="text/python">
+        from browser import document, window
 
-    <!-- Include jsPDF from CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        # Function to handle non-JSON response (HTML error page, etc.)
+        def handle_error(e):
+            document["output"].text = f"Error: {e}"
 
-    <script>
-        document.getElementById('generate-pdf').addEventListener('click', function() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+        def handle_response(response):
+            # Check if the response contains headers
+            if response.headers:
+                # Safely get the 'Content-Type' header (avoid 'NoneType' error)
+                content_type = response.headers.get('Content-Type', '')
+                if 'application/json' in content_type:
+                    response.json().then(handle_json)
+                else:
+                    # If the response is not JSON, show an error message
+                    response.text().then(handle_error)
+            else:
+                # If no headers are present (possible CORS issue), show a CORS error
+                handle_error("No headers found in response. This could be a CORS issue.")
 
-            // Add content to the PDF
-            doc.text("Welcome to my GitHub page!", 20, 30);
-            doc.text("This PDF was generated using JavaScript and the jsPDF library.", 20, 40);
-            doc.text("You can customize the content and layout as you like.", 20, 50);
+        def handle_json(data):
+            try:
+                # Update the output with the parsed JSON
+                document["output"].text = str(data)
+            except Exception as e:
+                # Handle any error during JSON parsing
+                document["output"].text = f"Error: {str(e)}"
 
-            // Adding a little bit of style with a header
-            doc.setFontSize(14);
-            doc.text("Custom Header Example", 20, 70);
-            doc.setFontSize(12);
-            doc.text("This is a simple example of using jsPDF to generate a PDF file directly from a webpage hosted on GitHub Pages.", 20, 80);
+        def fetch_data(event):
+            url = "https://cors-anywhere.herokuapp.com/https://acbar.org/jobs?location=12&category="
+            
+            # First, ensure that CORS Anywhere is activated
+            window.fetch(url).then(handle_response).catch(handle_error)
 
-            // Save the generated PDF
-            doc.save('generated-file.pdf');
-        });
+        # Bind the fetch function to the button click
+        document["fetchBtn"].bind("click", fetch_data)
     </script>
-
 </body>
 </html>
