@@ -3,79 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fetch Data with Brython</title>
-    <!-- Include Brython -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f9;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #output {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #e0f7fa;
-            border: 1px solid #80deea;
-        }
-    </style>
+    <title>Generate PDF with Multiple Tables</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body onload="brython()">
-    <h1>Fetch Data with Python in the Browser</h1>
-    
-    <button id="fetchBtn">Fetch Data</button>
-    
-    <div id="output"></div>
+<body>
+    <button id="generatePDF">Generate PDF</button>
 
-    <script type="text/python">
-        from browser import document, window
+    <script>
+        document.getElementById('generatePDF').addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-        # Function to handle non-JSON response (HTML error page, etc.)
-        def handle_error(e):
-            document["output"].text = f"Error: {e}"
+            // Education Section
+            doc.text('Education:', 14, 10);
+            doc.autoTable({
+                startY: 20,
+                head: [['Institution', 'Degree Received', 'Area of Study', 'Start', 'Graduated']],
+                body: [
+                    ['IGNOU University', 'Online B.A.', 'Information Technology', '2024', '2027'],
+                    ['University of the People', 'Online B.A.', 'Information Technology', '2022', '2026'],
+                    ['Sultan High School', 'High School Diploma', '12th Grade', '2016', '2019']
+                ],
+                styles: {
+                    lineWidth: 0.01,
+                    lineColor: [0, 0, 0]
+                },
+                headStyles: {
+                    fillColor: [211, 211, 211],
+                    textColor: [0, 0, 0],
+                    fontStyle: 'bold'
+                },
+                bodyStyles: {
+                    fillColor: [255, 255, 255],
+                    textColor: [0, 0, 0]
+                },
+                alternateRowStyles: {
+                    fillColor: [255, 255, 255]
+                },
+                didDrawCell: function(data) {
+                    doc.setLineWidth(0.01);
+                    doc.setDrawColor(0, 0, 0);
+                    doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+                }
+            });
 
-        def handle_response(response):
-            # Check if the response contains headers
-            if response.headers:
-                # Safely get the 'Content-Type' header (avoid 'NoneType' error)
-                content_type = response.headers.get('Content-Type', '')
-                if 'application/json' in content_type:
-                    response.json().then(handle_json)
-                else:
-                    # If the response is not JSON, show an error message
-                    response.text().then(handle_error)
-            else:
-                # If no headers are present (possible CORS issue), show a CORS error
-                handle_error("No headers found in response. This could be a CORS issue.")
+            // Professional Training Section
+            doc.text('Professional Training:', 14, doc.lastAutoTable.finalY + 10);
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 20,
+                head: [['Training Provider', 'Qualification', 'Training Types', 'Start', 'Graduation']],
+                body: [
+                    ['UNICEF', 'Certificate', 'Child Protection Training', '22-07-2023', '28-07-2023'],
+                    ['IRC', 'Certificate', 'Monitoring and Evaluation Training', '19-08-2023', '24-08-2023'],
+                    ['ALMC', 'Certificate', 'Advanced Leadership Training', '01-08-2023', '07-08-2023'],
+                    ['GFSHO', 'Certificate', 'Emergency Response Training', '05-07-2023', '10-07-2023'],
+                    ['USAID', 'Certificate', 'Networking Essentials and Data Analysis Training', '23-12-2022', '29-12-2022'],
+                    ['WHO', 'Certificate', 'Health and Safety Training', '01-09-2022', '07-09-2022'],
+                    ['Handicap International', 'Certificate', 'Disability Inclusion Training', '10-05-2022', '15-05-2022'],
+                    ['SEO', 'Certificate', 'Project Management Basics', '15-03-2022', '20-03-2022'],
+                    ['UNHCR', 'Certificate', 'ICDL', '12-02-2021', '12-04-2021']
+                ],
+                styles: {
+                    lineWidth: 0.01,
+                    lineColor: [0, 0, 0]
+                },
+                headStyles: {
+                    fillColor: [211, 211, 211],
+                    textColor: [0, 0, 0],
+                    fontStyle: 'bold'
+                },
+                bodyStyles: {
+                    fillColor: [255, 255, 255],
+                    textColor: [0, 0, 0]
+                },
+                alternateRowStyles: {
+                    fillColor: [255, 255, 255]
+                },
+                didDrawCell: function(data) {
+                    doc.setLineWidth(0.01);
+                    doc.setDrawColor(0, 0, 0);
+                    doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+                }
+            });
 
-        def handle_json(data):
-            try:
-                # Update the output with the parsed JSON
-                document["output"].text = str(data)
-            except Exception as e:
-                # Handle any error during JSON parsing
-                document["output"].text = f"Error: {str(e)}"
-
-        def fetch_data(event):
-            url = "https://cors-anywhere.herokuapp.com/https://acbar.org/jobs?location=12&category="
-            
-            # First, ensure that CORS Anywhere is activated
-            window.fetch(url).then(handle_response).catch(handle_error)
-
-        # Bind the fetch function to the button click
-        document["fetchBtn"].bind("click", fetch_data)
+            doc.save('document.pdf');
+        });
     </script>
 </body>
 </html>
