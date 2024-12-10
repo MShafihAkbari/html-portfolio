@@ -7,12 +7,94 @@
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #fff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        position: relative;
+    }
+    
+    .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+        position: relative; /* or absolute */
+        z-index: 1;
+    }
+    
+    .hidden-text {
+        color: white; /* Keeps it invisible */
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 0; /* Ensure it stays behind the container */
+    }
+    
+    
+    .input-field {
+        margin-bottom: 15px;
+    }
+    
+    .input-field input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    
+    .download-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+    }
+    
+    .download-btn:hover {
+        background-color: #0056b3;
+    }
+    
+</style>
 </head>
 <body>
-    <div class="content" id="content">
+    <div class="container">
+        <h1>Generate Your CV</h1>
+        <div class="input-field">
+            <input type="text" id="position" placeholder="Position Title">
+        </div>
+        <div class="input-field">
+            <input type="text" id="organization" placeholder="Organization's Name">
+        </div>
+        <div class="input-field">
+            <input type="text" id="degree" placeholder="University Degree">
+        </div>
+        <div class="input-field">
+            <input type="text" id="vacancy" placeholder="Vacancy No.">
+        </div>
+        <button class="download-btn" onclick="createPDFs()">Download CV</button>
+    </div>
+    <script>
+        function createPDFs() {
+            // Your PDF generation logic goes here
+            alert('CV generated!');
+        }
+    </script>
+
+    <div class="content hidden-text" id="content" style="color: white; user-select: none; z-index: -1;">
         <div class="title">Cover Letter</div>
         <div class="details">
             <p>From: Mohammad Shafih Akbari</p>
@@ -22,28 +104,28 @@
         <div class="line"></div>
         <div class="section">
             <p>Dear Hiring Manager,</p>
-            <p>I am excited to apply for the Enumerator position within your esteemed organization of Sayed Development and Humanitarian Organization (SDHO), as advertised. I am Mohammad Shafih Akbari, and I am confident that my diverse background, professional experience, and educational qualifications align well with the requirments of this role.</p>
-            <p>Throughout my academic journey, I have pursued a Bachelor's Degree in Computer Science-Infromation Technology from the University of the People based on the USA, as well as another degree in Computer Applications from the University of IGNOU based on India, which has prepared me to tackle various challenges and responsibilities effectively. My education coupled with 2 Years of Professional Expereience in Data Collection have provided me with the skills necessary to handle various tasks, including the ones provided in the job description.</p>
-            <p>In addition to my academic background, I have developed strong skills in communication, organization, and problem-solving during my tenure on GFSHO and SEO, which I believe are essential for the Enumerator role. My fluency in English (TOEFL 115), Dari, German and Pashto will enable me to effectively communicate and collaborate within diverse teams and with various stakeholders.</p>
-            <p>I am particularly drawn to the Sayed Development and Humanitarian Organization (SDHO)'s mission, and I am eager to contribute to your efforts by ensuring accurate and efficient task completeion. My adaptability, attention to detail, and eagerness to learn will allow me to meet the specific needs of the this particular department and support the broader objectives of the Sayed Development and Humanitarian Organization (SDHO).</p>
+            <p>I am excited to apply for the <em class="position">Position Title</em> position within your esteemed organization of <em class="organization">Organization</em>, as advertised. I am Mohammad Shafih Akbari, and I am confident that my diverse background, professional experience, and educational qualifications align well with the requirements of this role.</p>
+            <p>Throughout my academic journey, I have pursued a Bachelor's Degree in <em class="degree">University Degree</em> at Herat University, another Bachelor's degree in Computer Science-Information Technology from the University of the People based on the USA, as well as a degree in Computer Applications from IGNOU univeristy based on India, which has prepared me to tackle various challenges and responsibilities effectively. My education coupled with 3 Years of Professional Experience have provided me with the skills necessary to handle various tasks, including the ones provided in the job description.</p>
+            <p>In addition to my academic background, I have developed strong skills in communication, organization, and problem-solving during my tenure on GFSHO and SEO, which I believe are essential for the Social and Environmental Safeguard Assistant role. My fluency in English (TOEFL 115), Dari, German and Pashto will enable me to effectively communicate and collaborate within diverse teams and with various stakeholders.</p>
+            <p>I am particularly drawn to the <em class="organization">Organization</em>'s mission, and I am eager to contribute to your efforts by ensuring accurate and efficient task completion. My adaptability, attention to detail, and eagerness to learn will allow me to meet the specific needs of this particular department and support the broader objectives of the <em class="organization">Organization</em>.</p>
             <p>I am enthusiastic about the opportunity to bring my dedication, problem-solving abilities, and passion for this specific position to your organization. I am confident in my ability to collaborate effectively with your team and contribute to the success of your desired initiatives.</p>
-            <p>I welcome the chance to discuss how my qualifications and experiences align with the requirements of the Enumerator position in more detail. Thank you for considering my application. I am eager to contribute to the meaningful work of your esteemed organization and look forward to the possibility of discussing this opportunity further in an interview.</p>
+            <p>I welcome the chance to discuss how my qualifications and experiences align with the requirements of the <em class="position">Position Title</em> position in more detail. Thank you for considering my application. I am eager to contribute to the meaningful work of your esteemed organization and look forward to the possibility of discussing this opportunity further in an interview.</p>
             <p></p>
             <p>Sincerely,<br>Mohammad Shafih Akbari <br> Email: m.shafih.akbari@gmail.com <br> Phone: +93748851537</p>
         </div>
     </div>
-  <h1>PDF Creation & Merging Example</h1>
-  <button onclick="createPDFs()">Generate PDFs</button>
-  <button onclick="mergeAndDownload()">Merge and Download</button>
 
   <script>
-    // Global variables to store generated PDFs
+    function updateText(){
+        document.querySelector(".position").innerText = document.getElementById('position').value;
+        document.querySelector(".organization").innerText = document.getElementById('organization').value;
+        document.querySelector(".degree").innerText = document.getElementById('degree').value;
+    }
+  </script>
+
+  <script>
     let globalPdfLibBytes = null;
     let globalJsPdfBytes = null;
-
-    /**
-     * Create a simple PDF using pdf-lib and save to global variable
-     */
     async function createPDFUsingPdfLib() {
         const { PDFDocument, StandardFonts, rgb } = PDFLib;
         const pdfDoc = await PDFDocument.create();
@@ -58,7 +140,6 @@
 
         let y = height - margin;
 
-        // Draw title centered
         const title = "Cover Letter";
         const textWidth = timesRomanBoldFont.widthOfTextAtSize(title, titleFontSize);
         const x = (width - textWidth) / 2;
@@ -71,11 +152,13 @@
         });
         y -= titleFontSize * 1.5;
 
-        // Draw details
+        const organizationName = document.getElementById('organization').value;
+        const vacancyNumber = document.getElementById('vacancy').value;
+
         const details = [
-            'From: Mohammad Shafih Akbari',
-            'To: Respectful Organization of Sayed Development and Humanitarian Organization (SDHO)',
-            'Vacancy No: SDHO-24-096'
+          'From: Mohammad Shafih Akbari',
+          'To: Respectful Organization of ' + organizationName,
+          'Vacancy No: ' + vacancyNumber
         ];
         details.forEach(detail => {
             page.drawText(detail, {
@@ -84,11 +167,11 @@
                 size: fontSize,
                 font: timesRomanFont,
                 color: rgb(0, 0, 0),
+                
             });
             y -= fontSize * 1.5;
         });
 
-        // Draw line
         y -= 10;
         page.drawLine({
             start: { x: margin, y },
@@ -98,7 +181,6 @@
         });
         y -= 20;
 
-        // Draw main content
         const mainContent = document.getElementById('content').innerText.split('\n').slice(7);
         const lines = mainContent.reduce((acc, line) => acc.concat(wrapText(line, timesRomanFont, fontSize, contentWidth)), []);
 
@@ -138,10 +220,7 @@
 
       return pdfDoc.save();
     }
-
-    /**
-     * Create a simple PDF using jsPDF and save to global variable
-     */
+    
     async function createPDFUsingJsPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -377,23 +456,18 @@
       return doc.output('arraybuffer');
     }
 
-    /**
-     * Generate the two PDFs and store them in global variables
-     */
     async function createPDFs() {
       try {
         globalPdfLibBytes = await createPDFUsingPdfLib();
         globalJsPdfBytes = await createPDFUsingJsPDF();
-        alert('PDFs have been generated and stored!');
+        updateText()
+        mergeAndDownload()
       } catch (error) {
         console.error('Error generating PDFs', error);
         alert('Error generating PDFs');
       }
     }
 
-    /**
-     * Merge the PDFs stored in global variables and trigger download
-     */
     async function mergeAndDownload() {
       if (!globalPdfLibBytes || !globalJsPdfBytes) {
         alert('Please generate the PDFs first by clicking "Generate PDFs"');
@@ -415,18 +489,13 @@
         copiedPagesB.forEach((page) => mergedPdf.addPage(page));
 
         const mergedPdfBytes = await mergedPdf.save();
-        downloadPdf(mergedPdfBytes, 'merged.pdf');
+        downloadPdf(mergedPdfBytes, 'Mohammad Shafih Akbari CV and Cover Letter.pdf');
       } catch (error) {
         console.error('Error merging PDFs', error);
         alert('Error merging PDFs');
       }
     }
 
-    /**
-     * Handle the download of a given PDF blob
-     * @param {Uint8Array} pdfBytes 
-     * @param {string} filename 
-     */
     function downloadPdf(pdfBytes, filename) {
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const link = document.createElement('a');
