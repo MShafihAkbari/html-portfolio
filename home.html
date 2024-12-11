@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammad Shafih Akbari - Portfolio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: url('pexels-tirachard-kumtanom-112571-733857.jpg') no-repeat center center/cover;
+        }
+        header h1, header p {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            color: #000000;
+        }
+        header h1 {
+            top: 40%;
+            font-size: 3em;
+        }
+        header p {
+            top: 50%;
+            font-size: 1.5em;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #2d3748, #4a5568);
+            position: fixed;
+            top: 5px;
+            width: 40%;
+            border-radius: 30px;
+            border-top-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+    
+        nav .menu {
+            display: flex;
+        }
+    
+        nav .menu a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1em;
+            font-weight: bold;
+            position: relative;
+            transition: color 0.3s;
+        }
+    
+        nav .menu a:hover {
+            color: #63b3ed;
+        }
+    
+        nav .menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #63b3ed;
+            transition: width 0.3s, left 0.3s;
+        }
+    
+        nav .menu a:hover::after {
+            width: 100%;
+            left: 0;
+        }
+    
+        @media (max-width: 768px) {
+            nav {
+                display: none; /* This will hide the header */
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 80px;
+            flex: 1;
+            text-align: center;
+            margin-top: 100vh;
+        }
+        .about, .skills, .projects, .contact {
+            margin-bottom: 50px;
+        }
+        .skills ul, .projects ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .skills li, .projects li {
+            background-color: #fff;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 300px;
+            text-align: center;
+        }
+        .skills li:hover, .projects li:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .contact form input, .contact form textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+        .contact form input[type="submit"] {
+            background-color: #2d3748;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .contact form input[type="submit"]:hover {
+            background-color: #4a5568;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #1a202c;
+            color: #fff;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mohammad Shafih Akbari</h1>
+        <p>Full Stack Developer</p>
+    </header>
+    <nav>
+        <div class="logo">MSA</div>
+        <div class="menu">
+            <a href="#about">About</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+    <div class="container">
+        <section id="about" class="about">
+            <h2>About Me</h2>
+            <p>Hello! I am Mohammad Shafih Akbari, a passionate Full Stack Developer. I specialize in creating interactive and dynamic web applications.</p>
+        </section>
+        <section id="skills" class="skills">
+            <h2>Skills</h2>
+            <ul>
+                <li>HTML, CSS, JavaScript</li>
+                <li>React, Angular, Vue</li>
+                <li>Node.js, Express</li>
+                <li>Python, Django</li>
+                <li>SQL, MongoDB</li>
+            </ul>
+        </section>
+        <section id="projects" class="projects">
+            <h2>Projects</h2>
+            <ul>
+                <li>Project 1: A responsive e-commerce website using React and Node.js.</li>
+                <li>Project 2: A real-time chat application with WebSocket.</li>
+                <li>Project 3: A personal blog built with Django and Bootstrap.</li>
+            </ul>
+        </section>
+        <section id="contact" class="contact">
+            <h2>Contact Me</h2>
+            <form>
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+                <input type="submit" value="Send Message">
+            </form>
+        </section>
+    </div>
+    <footer>
+        <p>&copy; 2024 Mohammad Shafih Akbari. All rights reserved.</p>
+    </footer>
+    <script>
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            header.style.opacity = 1 - window.scrollY / window.innerHeight;
+        });
+    </script>
+</body>
+</html>
