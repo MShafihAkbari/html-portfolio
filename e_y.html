@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Create & Merge</title>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f3f4f6;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+        overflow-x: hidden; /* Allow vertical scrolling */
+        position: relative;
+        min-height: 100vh;
+    }
+    *, *::before, *::after {
+        box-sizing: inherit;
+    }
+    nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1vh 2vw;
+        background: linear-gradient(45deg, #2d3748, #4a5568);
+        position: fixed;
+        top: 0;
+        width: 100vw;
+        z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s, width 0.3s;
+        flex-wrap: nowrap;
+    }
+
+    nav .menu {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    nav .menu a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 1vw;
+        padding: 0 1.5vw;
+        font-size: 1em;
+        font-weight: bold;
+        position: relative;
+        transition: color 0.3s;
+    }
+
+    nav .menu a:hover {
+        color: #63b3ed;
+    }
+
+    nav .menu a::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: #63b3ed;
+        transition: width 0.3s, left 0.3s;
+    }
+
+    nav .menu a:hover::after {
+        width: 100%;
+        left: 0;
+    }
+
+    .container {
+        background: white;
+        padding: 40px;
+        border-radius: 30px;
+        border-top-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: calc(100% - 40px); /* Make responsive to screen size */
+        text-align: center;
+        z-index: 2;
+        margin: 150px 0; /* Add margin to top and bottom */
+        flex: 1 0 auto; /* Allow the container to grow and shrink */
+    }
+
+    .container h1 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .input-field {
+        margin-bottom: 15px;
+    }
+
+    .input-field input {
+        width: calc(100% - 20px);
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        transition: border-color 0.3s;
+        box-sizing: border-box;
+    }
+
+    .input-field input:focus {
+        border-color: #4a5568;
+    }
+
+    .download-btn, .title-bar {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 45px;
+        background-color: #00203F;
+        color: #fff;
+        cursor: pointer;
+        margin-top: 20px;
+        border-radius: 30px;
+        border-top-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    .download-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .hidden-text {
+        color: #f3f4f6; /* Blend in with the background */
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1; /* Place behind the container and background */
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #1a202c;
+        color: #fff;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+    }
+</style>
+
+</head>
+<body>
+    <nav>
+        <div class="menu">
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html">Projects</a>
+            <a href="contact.html">Contact</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
+    <div class="container">
+        <h2 class="">Welcome Elnaz Yawari</h2>
+        <div class="input-field">
+            <input type="text" id="position" placeholder="Position Title">
+        </div>
+        <div class="input-field">
+            <input type="text" id="organization" placeholder="Organization's Name">
+        </div>
+        <div class="input-field">
+            <input type="text" id="vacancy" placeholder="Vacancy No.">
+        </div>
+        <button class="download-btn" onclick="createPDFs()">Download CV</button>
+    </div>
+    <footer>
+        <p>&copy;Copyright 2024 Mohammad Shafih Akbari. All rights reserved.</p>
+    </footer>
+
+    <div class="content hidden-text" id="content" style="user-select: none;">
+        <div class="title">Cover Letter</div>
+        <div class="details">
+            <p>From: Elnaz Yawari</p>
+            <p>To: Respectful Organization of <em class="organization">Organization</em></p>
+            <p>Vacancy No: Vacancy No.</p>
+        </div>
+        <div class="line"></div>
+        <div class="section">
+            <p>Dear Hiring Manager,</p>
+            <p>With reference to your announcement for the position of <em class="position">Position Title</em>, I am excited to express my interest in this role,
+                as it aligns perfectly with my educational background and professional experience. I hold a degree in Anesthesia from
+                Kardan Sharq University in Herat and a Midwifery degree from Milad Noor-Herat. Since 2018, I have gained extensive
+                experience working on various projects with organizations such as OCCD, World Vision International, EHDA, BRAC, and
+                Herat Hospital, which has provided me with a comprehensive understanding of the healthcare landscape.
+            </p>
+            <p>My roles have included significant positions such as a Vaccinator at Vision Development Organization and OCCD, and a
+                Midwife at World Vision International. Additionally, I served as a Child Nurse at Afghan-Turkan Hospital and an
+                Emergency Nurse at Bozorg Mahr Hospital, where I was involved in critical care and public health initiatives. My diverse
+                experiences in immunization outreach and maternal and child health have equipped me with the skills necessary to excel in
+                this position. Furthermore, my work as a Surveyor and Social Worker at BRAC allowed me to focus on health education
+                and community engagement, further enhancing my ability to communicate effectively in diverse settings.
+            </p>
+            <p>In addition to my fluency in local languages, I am proficient in English and skilled in using various computer programs,
+                including the Office suite and both online and offline databases. I greatly value the mission of <em class="org">Organization</em> and believe that my
+                experiences in dynamic organizations, along with my educational background, would contribute significantly to your team
+                and enable me to learn and grow within this field.
+            </p>
+            <p>I am confident that my technical expertise and relevant experiences make me a strong candidate for this position. I would
+                appreciate your consideration of my application and look forward to the opportunity for an interview to discuss how I can
+                contribute to your organization.
+            </p>
+            <p>Thank you in advance for your time and consideration.
+            </p>
+            <p></p>
+            <p>Sincerely,<br>Elnaz Yawari <br> Email: elnazyawari0@gmail.com <br> Phone: : +93729790334 / +93729448870
+            </p>
+        </div>
+    </div>
+
+  <script>
+
+    function updateText() {
+        const positionValue = document.getElementById('position').value;
+        const orgValue =  document.getElementById("organization").value;
+    
+        document.querySelectorAll(".position").forEach(el => {
+            el.innerText = positionValue;
+        });
+        document.querySelectorAll(".org").forEach(el => {
+            el.innerText = orgValue;
+        });
+
+    }
+  </script>
+
+  <script>
+    let globalPdfLibBytes = null;
+    let globalJsPdfBytes = null;
+    async function createPDFUsingPdfLib() {
+        const { PDFDocument, StandardFonts, rgb } = PDFLib;
+        const pdfDoc = await PDFDocument.create();
+        let page = pdfDoc.addPage([600, 850]);
+        const { width, height } = page.getSize();
+        const fontSize = 11;
+        const titleFontSize = 26;
+        const margin = 40;
+        const contentWidth = width - margin * 2;
+        const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+        const timesRomanBoldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+
+        let y = height - margin;
+
+        const title = "Cover Letter";
+        const textWidth = timesRomanBoldFont.widthOfTextAtSize(title, titleFontSize);
+        const x = (width - textWidth) / 2;
+        page.drawText(title, {
+            x,
+            y,
+            size: titleFontSize,
+            font: timesRomanBoldFont,
+            color: rgb(0, 0, 0),
+        });
+        y -= titleFontSize * 1.5;
+
+        const organizationName = document.getElementById('organization').value;
+        const vacancyNumber = document.getElementById('vacancy').value;
+
+        const details = [
+          'From: Elnaz Yawari',
+          'To: Respectful Organization of ' + organizationName,
+          'Vacancy No: ' + vacancyNumber
+        ];
+        details.forEach(detail => {
+            page.drawText(detail, {
+                x: margin,
+                y,
+                size: fontSize,
+                font: timesRomanFont,
+                color: rgb(0, 0, 0),
+                
+            });
+            y -= fontSize * 1.5;
+        });
+
+        y -= 10;
+        page.drawLine({
+            start: { x: margin, y },
+            end: { x: width - margin, y },
+            thickness: 1,
+            color: rgb(0, 0, 0),
+        });
+        y -= 20;
+
+        const mainContent = document.getElementById('content').innerText.split('\n').slice(7);
+        const lines = mainContent.reduce((acc, line) => acc.concat(wrapText(line, timesRomanFont, fontSize, contentWidth)), []);
+
+        lines.forEach(line => {
+            if (y - fontSize < margin) {
+                page = pdfDoc.addPage([600, 850]);
+                y = height - margin;
+            }
+            page.drawText(line, {
+                x: margin,
+                y,
+                size: fontSize,
+                font: timesRomanFont,
+                color: rgb(0, 0, 0),
+            });
+            y -= fontSize * 1.5;
+        });
+        function wrapText(text, font, fontSize, maxWidth) {
+            const words = text.split(' ');
+            const lines = [];
+            let line = '';
+
+            words.forEach(word => {
+                const testLine = line + word + ' ';
+                const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+                if (testWidth > maxWidth) {
+                    lines.push(line.trim());
+                    line = word + ' ';
+                } else {
+                    line = testLine;
+                }
+            });
+
+            lines.push(line.trim());
+            return lines;
+        }
+
+      return pdfDoc.save();
+    }
+    
+    async function createPDFUsingJsPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont('Times New Roman');
+      const margin = 20;
+
+      // Education Section
+      doc.text('Education:', 13.5, margin);
+      doc.autoTable({
+          startY: margin + 10,
+          margin: { top: margin, bottom: margin },
+          head: [['Institution', 'Degree Received', 'Area of Study', 'Start', 'Graduated']],
+          body: [
+          ['Kardan Sharq Institute', 'Diploma', 'Anesthesia', '1400', '1402'],
+          ['Milad Noor Institute', 'Diploma', 'Midwifery', '1399', '1401'],
+          ['Shahid Abdul Qadir High School', 'Certificate', 'School Subjects', '1387', '1399']
+        ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold',
+              showHead: 'firstPage'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+
+      // Professional Training Section
+      doc.text('Professional Training:', 13.5, doc.lastAutoTable.finalY + 10);
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          head: [['Training Provider', 'Qualification', 'Training Types', 'Start', 'Graduation']],
+          body: [
+          ['Health Message Learning Center', 'Certificate', 'Vaccines (EPI Vaccin, Cold Chain and AEDI)', '7th Nov 2023', '21st Nov 2023'],
+          ['Ministry of Public Health', 'Certificate', 'ENBC', '15th Jun 2023', '19th Jun 2023'],
+          ['Y-Peer Afghanistan', 'Certificate', 'Training of Trainers (TOT)', '13th Nov 2022', '17th Nov 2022'],
+          ['Youth Peace Voice Organization', 'Certificate', 'The Art of Expression', '1399/10/20', '1399/11/20']
+        ],
+        
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+
+      // Work Experience Section
+      doc.text('Work Experience:', 13.5, doc.lastAutoTable.finalY + 10);
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          showHead: 'firstPage',
+          head: [['Organization', 'Job Title', 'Major Responsibilities', 'Start', 'End', 'Total']],
+          body: [
+              ['OCCD', 'Vaccinator',
+                '• Conducted immunization campaigns in various communities to increase vaccination coverage and public awareness.\n' +
+                '• Educated families about the importance of vaccinations in preventing disease outbreaks and promoting health.\n' +
+                '• Monitored and documented each vaccination, including patient reactions and follow-up needs for care.\n' +
+                '• Collaborated with local health authorities to identify areas in need of vaccination outreach.\n' +
+                '• Engaged in public health education initiatives to inform communities about vaccine-preventable diseases.\n' +
+                '• Developed promotional materials that encourage vaccination and dispel common myths.\n' +
+                '• Participated in training to stay current with vaccination guidelines and health regulations.\n' +
+                '• Organized community health events to promote vaccination and overall wellness.\n' +
+                '• Assisted in the development and implementation of vaccination schedules for high-risk populations.\n' +
+                '• Provided hands-on training to new vaccination volunteers to ensure best practices.\n' +
+                '• Coordinated with healthcare providers to streamline the referral process for additional medical services.\n' +
+                '• Advocated for vaccination as a vital component of community health initiatives to reduce disease spread.',
+                '01-03-1402', '01-12-1402', '9 Months'],
+              
+              ['World Vision International', 'Midwife',
+                '• Provided prenatal, delivery, and postnatal care to mothers, ensuring safe childbirth experiences.\n' +
+                '• Educated women about reproductive health, family planning, and maternal health practices to promote wellness.\n' +
+                '• Monitored maternal and infant health indicators, identifying any risks that require medical intervention.\n' +
+                '• Supported community health programs aimed at reducing maternal and infant mortality rates.\n' +
+                '• Collaborated with healthcare teams to develop comprehensive care plans for high-risk pregnancies.\n' +
+                '• Conducted workshops and seminars to raise awareness about maternal health issues and available resources.\n' +
+                '• Maintained detailed records of patient interactions, treatments, and outcomes for ongoing care.\n' +
+                '• Engaged with local leaders to promote cultural acceptance of maternal healthcare practices and services.',
+                '13-10-2023', '13-11-2023', '1 Month'],
+              
+              ['BARC', 'Social Worker',
+                '• Assessed the social and health needs of families, developing tailored support plans to address challenges.\n' +
+                '• Advocated for access to health services and resources, connecting families with necessary support systems.\n' +
+                '• Facilitated workshops on health education, nutrition, and family planning to empower community members.\n' +
+                '• Collaborated with healthcare providers to ensure holistic care for individuals and families in need.\n' +
+                '• Monitored the progress of social programs, evaluating their effectiveness and areas for improvement.\n' +
+                '• Facilitated community health fairs to increase access to essential services and resources.\n' +
+                '• Coordinated with local organizations to provide integrated social and health services to underserved populations.\n' +
+                '• Conducted home visits to provide support and follow-up on families’ health and social needs.\n' +
+                '• Maintained accurate records of interventions and client progress for ongoing program evaluation.',
+                '01-05-1401', '01-08-1401', '3 Months'],
+              
+              ['Afghan Turkan Hospital', 'Child Nurse',
+                '• Provided immediate medical care to patients presenting with acute illnesses and injuries in emergencies.\n' +
+                '• Assessed patient conditions quickly, prioritizing interventions based on severity and urgency of health needs.\n' +
+                '• Administered medications and treatments as prescribed, ensuring adherence to safety protocols and standards.\n' +
+                '• Collaborated with physicians and healthcare teams to develop comprehensive care plans for critical patients.\n' +
+                '• Monitored vital signs and responded to changes in patient conditions promptly and effectively.\n' +
+                '• Educated patients and families about emergency procedures and post-discharge care requirements.\n' +
+                '• Maintained accurate documentation of patient assessments, interventions, and outcomes for continuity of care.',
+                '01-01-1403', '31-03-1403', '3 Months'],
+              
+              ['Bozorg Mahr Hospital', 'Emergency Nurse',
+                '• Provided compassionate care to patients, assessing their health needs and responding promptly.\n' +
+                '• Administered medications and treatments as prescribed, ensuring accurate dosages and patient safety.\n' +
+                '• Monitored vital signs and health status, reporting any changes to the medical team immediately.\n' +
+                '• Educated parents about their child’s health conditions and treatment plans for effective management.\n' +
+                '• Supported children emotionally during hospital stays, helping to alleviate anxiety and fear.\n' +
+                '• Collaborated with multidisciplinary teams to create comprehensive care plans tailored to individual patients.',
+                '01-06-1400', '01-12-1400', '6 Months'],
+              
+              ['Sayed Khalil Kharadpisha Pharmacy', 'Midwife',
+                '• Assisted in planning and executing community health events.\n' +
+                '• Managed social media campaigns to increase engagement and participation.\n' +
+                '• Conducted surveys to assess participant satisfaction and gather feedback.\n' +
+                '• Collaborated with vendors to ensure successful event logistics and outcomes.\n' +
+                '• Developed communication strategies to improve community awareness and involvement.\n' +
+                '• Managed volunteer recruitment and training for community health initiatives.',
+                '01-04-1399', '30-06-1401', '3 Months']
+            ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0],
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+      // Languages Section
+      doc.text('Languages:', 13.5, doc.lastAutoTable.finalY + 10);
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          head: [['Languages', 'Speaking', 'Writing', 'Understanding']],
+          body: [
+              ['English', 'Good', 'Good', 'Good'],
+              ['Dari', 'Native', 'Excellent', 'Excellent'],
+              ['Pashto', 'Very Good', 'Very Good', 'Very Good']
+          ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+
+      // Skills Section
+      <!-- doc.text('Skills:', 13.5, doc.lastAutoTable.finalY + 10); -->
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          showHead: 'firstPage',
+          head: [['Skills']],
+          body: [
+              ['Healthcare Skills: Comprehensive experience in maternal and child health, emergency response, and patient care.'],
+              ['Clinical Skills: Proficient in administering medications, monitoring vital signs, and conducting health assessments.'],
+              ['Computer Skills: Proficient in various data analysis tools and medical software applications.'],
+              ['Communication: Effective verbal and written communication skills, articulating ideas clearly with patients and teams.'],
+              ['Teamwork: Collaborative mindset, working effectively in diverse healthcare teams to achieve common goals.'],
+              ['Problem-solving: Analytical thinking to assess situations and develop practical solutions in high-pressure environments.'],
+              ['Time Management: Efficient prioritization and organization of tasks to meet deadlines in fast-paced settings.'],
+              ['Adaptability: Flexibility to adjust to changing circumstances and willingness to learn new medical techniques.'],
+              ['Interpersonal Skills: Ability to build rapport with patients, families, and colleagues, demonstrating empathy and understanding.'],
+              ['Attention to Detail: Thoroughness and accuracy in clinical documentation and patient care procedures.'],
+              ['Critical Thinking: Ability to evaluate clinical information objectively and make sound medical judgments.'],
+              ['Creativity: Innovative thinking to improve patient engagement and health education initiatives.']
+            ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              showHead: 'firstPage',
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+      // References Section
+      doc.text('References:', 13.5, doc.lastAutoTable.finalY + 10);
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          head: [['Name', 'Organization', 'Job Title', 'Phone', 'Email']],
+            body: [
+              ['Rafiullah Amini', 'Y_PEER', 'Focal Point and Program Manager', '0788885934', 'Rafullahamini1@gmail.com'],
+              ['Dr. Homaion Aref', 'World Vision International', 'Project Manager', '0799237595'],
+              ['Esmatullah Alimi', 'Vision Development Organization', 'Senior HR Officer', '0728777115', 'hr1@vdongo.org']
+            ],          
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+
+      return doc.output('arraybuffer');
+    }
+
+    async function createPDFs() {
+      try {
+        await updateText()
+        globalPdfLibBytes = await createPDFUsingPdfLib();
+        globalJsPdfBytes = await createPDFUsingJsPDF();
+        mergeAndDownload()
+      } catch (error) {
+        console.error('Error generating PDFs', error);
+        alert('Error generating PDFs');
+      }
+    }
+
+    async function mergeAndDownload() {
+      if (!globalPdfLibBytes || !globalJsPdfBytes) {
+        alert('Please generate the PDFs first by clicking "Generate PDFs"');
+        return;
+      }
+
+      const { PDFDocument } = PDFLib;
+
+      try {
+        const pdfDoc1 = await PDFDocument.load(globalPdfLibBytes);
+        const pdfDoc2 = await PDFDocument.load(globalJsPdfBytes);
+
+        const mergedPdf = await PDFDocument.create();
+
+        const copiedPagesA = await mergedPdf.copyPages(pdfDoc1, pdfDoc1.getPageIndices());
+        copiedPagesA.forEach((page) => mergedPdf.addPage(page));
+
+        const copiedPagesB = await mergedPdf.copyPages(pdfDoc2, pdfDoc2.getPageIndices());
+        copiedPagesB.forEach((page) => mergedPdf.addPage(page));
+
+        const mergedPdfBytes = await mergedPdf.save();
+        downloadPdf(mergedPdfBytes, 'Elnaz Yawari CV and Cover Letter.pdf');
+      } catch (error) {
+        console.error('Error merging PDFs', error);
+        alert('Error merging PDFs');
+      }
+    }
+
+    function downloadPdf(pdfBytes, filename) {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Create & Merge</title>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f3f4f6;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+        overflow-x: hidden; /* Allow vertical scrolling */
+        position: relative;
+        min-height: 100vh;
+    }
+    *, *::before, *::after {
+        box-sizing: inherit;
+    }
+    nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1vh 2vw;
+        background: linear-gradient(45deg, #2d3748, #4a5568);
+        position: fixed;
+        top: 0;
+        width: 100vw;
+        z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s, width 0.3s;
+        flex-wrap: nowrap;
+    }
+
+    nav .menu {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    nav .menu a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 1vw;
+        padding: 0 1.5vw;
+        font-size: 1em;
+        font-weight: bold;
+        position: relative;
+        transition: color 0.3s;
+    }
+
+    nav .menu a:hover {
+        color: #63b3ed;
+    }
+
+    nav .menu a::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: #63b3ed;
+        transition: width 0.3s, left 0.3s;
+    }
+
+    nav .menu a:hover::after {
+        width: 100%;
+        left: 0;
+    }
+
+    .container {
+        background: white;
+        padding: 40px;
+        border-radius: 30px;
+        border-top-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: calc(100% - 40px); /* Make responsive to screen size */
+        text-align: center;
+        z-index: 2;
+        margin: 150px 0; /* Add margin to top and bottom */
+        flex: 1 0 auto; /* Allow the container to grow and shrink */
+    }
+
+    .container h1 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .input-field {
+        margin-bottom: 15px;
+    }
+
+    .input-field input {
+        width: calc(100% - 20px);
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        transition: border-color 0.3s;
+        box-sizing: border-box;
+    }
+
+    .input-field input:focus {
+        border-color: #4a5568;
+    }
+
+    .download-btn, .title-bar {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 45px;
+        background-color: #00203F;
+        color: #fff;
+        cursor: pointer;
+        margin-top: 20px;
+        border-radius: 30px;
+        border-top-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    .download-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .hidden-text {
+        color: #f3f4f6; /* Blend in with the background */
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1; /* Place behind the container and background */
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #1a202c;
+        color: #fff;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+    }
+</style>
+
+</head>
+<body>
+    <nav>
+        <div class="menu">
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html">Projects</a>
+            <a href="contact.html">Contact</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
+    <div class="container">
+        <h1 class="">Generate Your CV</h1>
+        <div class="input-field">
+            <input type="text" id="position" placeholder="Position Title">
+        </div>
+        <div class="input-field">
+            <input type="text" id="organization" placeholder="Organization's Name">
+        </div>
+        <div class="input-field">
+            <input type="text" id="degree" placeholder="University Degree">
+        </div>
+        <div class="input-field">
+            <input type="text" id="vacancy" placeholder="Vacancy No.">
+        </div>
+        <button class="download-btn" onclick="createPDFs()">Download CV</button>
+    </div>
+    <footer>
+        <p>&copy;Copyright 2024 Mohammad Shafih Akbari. All rights reserved.</p>
+    </footer>
+    <script>
+        function createPDFs() {
+            // Your PDF generation logic goes here
+            alert('CV generated!');
+        }
+    </script>
+
+    <div class="hidden-text content" id="content">
+        <div class="title">Cover Letter</div>
+        <div class="details">
+            <p>From: Mohammad Shafih Akbari</p>
+            <p>To: Respectful Organization of Sayed Development and Humanitarian Organization (SDHO)</p>
+            <p>Vacancy No: SDHO-24-096</p>
+        </div>
+        <div class="line"></div>
+        <div class="section" style="user-select: none;">
+            <p>Dear Hiring Manager,</p>
+            <p>I am excited to apply for the <em class="position">Position Title</em> position within your esteemed organization of <em class="org">Organization</em>, as advertised. I am Mohammad Shafih Akbari, and I am confident that my diverse background, professional experience, and educational qualifications align well with the requirements of this role.</p>
+            <p>Throughout my academic journey, I have pursued a Bachelor's Degree in <em class="degree">University Degree</em> at Herat University, another Bachelor's degree in Computer Science-Information Technology from the University of the People based on the USA, as well as a degree in Computer Applications from IGNOU univeristy based on India, which has prepared me to tackle various challenges and responsibilities effectively. My education coupled with 3 Years of Professional Experience have provided me with the skills necessary to handle various tasks, including the ones provided in the job description.</p>
+            <p>In addition to my academic background, I have developed strong skills in communication, organization, and problem-solving during my tenure on GFSHO and SEO, which I believe are essential for the Social and Environmental Safeguard Assistant role. My fluency in English (TOEFL 115), Dari, German and Pashto will enable me to effectively communicate and collaborate within diverse teams and with various stakeholders.</p>
+            <p>I am particularly drawn to the <em class="org">Organization</em>'s mission, and I am eager to contribute to your efforts by ensuring accurate and efficient task completion. My adaptability, attention to detail, and eagerness to learn will allow me to meet the specific needs of this particular department and support the broader objectives of the <em class="org">Organization</em>.</p>
+            <p>I am enthusiastic about the opportunity to bring my dedication, problem-solving abilities, and passion for this specific position to your organization. I am confident in my ability to collaborate effectively with your team and contribute to the success of your desired initiatives.</p>
+            <p>I welcome the chance to discuss how my qualifications and experiences align with the requirements of the <em class="position">Position Title</em> position in more detail. Thank you for considering my application. I am eager to contribute to the meaningful work of your esteemed organization and look forward to the possibility of discussing this opportunity further in an interview.</p>
+            <p>Sincerely,<br>Mohammad Shafih Akbari <br> Email: m.shafih.akbari@gmail.com <br> Phone: +93748851537</p>
+        </div>
+    </div>
+  <script>
+    function updateText() {
+        const positionValue = document.getElementById('position').value;
+        const degreeValue = document.getElementById('degree').value;
+        const orgValue =  document.getElementById("organization").value;
+    
+        document.querySelectorAll(".position").forEach(el => {
+            el.innerText = positionValue;
+        });
+    
+        document.querySelectorAll(".degree").forEach(el => {
+            el.innerText = degreeValue;
+        });
+        document.querySelectorAll(".org").forEach(el => {
+            el.innerText = orgValue;
+        });
+
+    }
+  </script>
+
+  <script>
+    let globalPdfLibBytes = null;
+    let globalJsPdfBytes = null;
+    async function createPDFUsingPdfLib() {
+        const { PDFDocument, StandardFonts, rgb } = PDFLib;
+        const pdfDoc = await PDFDocument.create();
+        let page = pdfDoc.addPage([600, 850]);
+        const { width, height } = page.getSize();
+        const fontSize = 11;
+        const titleFontSize = 26;
+        const margin = 40;
+        const contentWidth = width - margin * 2;
+        const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+        const timesRomanBoldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+
+        let y = height - margin;
+
+        const title = "Cover Letter";
+        const textWidth = timesRomanBoldFont.widthOfTextAtSize(title, titleFontSize);
+        const x = (width - textWidth) / 2;
+        page.drawText(title, {
+            x,
+            y,
+            size: titleFontSize,
+            font: timesRomanBoldFont,
+            color: rgb(0, 0, 0),
+        });
+        y -= titleFontSize * 1.5;
+
+        const organizationName = document.getElementById('organization').value;
+        const vacancyNumber = document.getElementById('vacancy').value;
+
+        const details = [
+          'From: Mohammad Shafih Akbari',
+          'To: Respectful Organization of ' + organizationName,
+          'Vacancy No: ' + vacancyNumber
+        ];
+        details.forEach(detail => {
+            page.drawText(detail, {
+                x: margin,
+                y,
+                size: fontSize,
+                font: timesRomanFont,
+                color: rgb(0, 0, 0),
+                
+            });
+            y -= fontSize * 1.5;
+        });
+
+        y -= 10;
+        page.drawLine({
+            start: { x: margin, y },
+            end: { x: width - margin, y },
+            thickness: 1,
+            color: rgb(0, 0, 0),
+        });
+        y -= 20;
+
+        const mainContent = document.getElementById('content').innerText.split('\n').slice(7);
+        const lines = mainContent.reduce((acc, line) => acc.concat(wrapText(line, timesRomanFont, fontSize, contentWidth)), []);
+
+        lines.forEach(line => {
+            if (y - fontSize < margin) {
+                page = pdfDoc.addPage([600, 850]);
+                y = height - margin;
+            }
+            page.drawText(line, {
+                x: margin,
+                y,
+                size: fontSize,
+                font: timesRomanFont,
+                color: rgb(0, 0, 0),
+            });
+            y -= fontSize * 1.5;
+        });
+        function wrapText(text, font, fontSize, maxWidth) {
+            const words = text.split(' ');
+            const lines = [];
+            let line = '';
+
+            words.forEach(word => {
+                const testLine = line + word + ' ';
+                const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+                if (testWidth > maxWidth) {
+                    lines.push(line.trim());
+                    line = word + ' ';
+                } else {
+                    line = testLine;
+                }
+            });
+
+            lines.push(line.trim());
+            return lines;
+        }
+
+      return pdfDoc.save();
+    }
+    
+    async function createPDFUsingJsPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont('Times New Roman');
+      const margin = 20;
+
+      // Education Section
+      doc.text('Education:', 13.5, margin);
+      doc.autoTable({
+          startY: margin + 10,
+          margin: { top: margin, bottom: margin },
+          head: [['Institution', 'Degree Received', 'Area of Study', 'Start', 'Graduated']],
+          body: [
+              ['Herat University', 'B.A.', 'Business Administration', '2020', '2023'],
+              ['IGNOU University', 'Online M.A.', 'Information Technology', '2024', '2026'],
+              ['University of the People', 'Online B.A.', 'Database', '2023', '2026'],
+              ['Sultan High School', 'High School Diploma', '12th Grade', '2016', '2019']
+          ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold',
+              showHead: 'firstPage'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+
+      // Professional Training Section
+      doc.text('Professional Training:', 13.5, doc.lastAutoTable.finalY + 10);
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          head: [['Training Provider', 'Qualification', 'Training Types', 'Start', 'Graduation']],
+          body: [
+              ['IRC', 'Certificate', 'Monitoring and Evaluation Training', '19-08-2023', '24-08-2023'],
+              ['GFSHO', 'Certificate', 'Emergency Response Training', '05-07-2023', '10-07-2023'],
+              ['USAID', 'Certificate', 'Networking Essentials and Data Analysis Training', '23-12-2022', '29-12-2022'],
+              ['Handicap International', 'Certificate', 'Disability Inclusion Training', '10-05-2022', '15-05-2022'],
+              ['ELCLC', 'Certificate', 'ICDL', '12-02-2021', '12-04-2021'],
+              ['ELCLC', 'Certificate', 'ICDL', '12-02-2021', '12-04-2021'],
+              ['ELCLC', 'Certificate', 'ICDL', '12-02-2021', '12-04-2021'],
+              ['ELCLC', 'Certificate', 'ICDL', '12-02-2021', '12-04-2021']
+
+          ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+
+      // Work Experience Section
+      doc.text('Work Experience:', 13.5, doc.lastAutoTable.finalY + 10);
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          head: [['Organization', 'Job Title', 'Major Responsibilities', 'Start', 'End', 'Total']],
+          body: [
+              ['GFSHO', 'Enumerator', '• Conducted surveys and interviews to collect data for program evaluation.\n• Ensured accurate data collection in line with non-profit objectives.\n• Maintained confidentiality and followed ethical guidelines during data collection.\n• Engaged with communities to gather data on program impact.\n• Assisted in training volunteers for consistent data collection.\n• Helped identify trends and outcomes from collected data.\n• Reported challenges in data collection and offered solutions.\n• Kept detailed records of data collection activities.\n• Collaborated with the team to submit data on time.\n• Shared insights from data collection to improve programs.', '05-09-2023', '16-09-2024', '1 Year'],
+              ['SEO', 'Data Collector/Enumerator', '• Conducted structured surveys and interviews with beneficiaries.\n• Ensured ethical standards were followed during data collection.\n• Worked with staff to identify target populations for data collection.\n• Gathered both quantitative and qualitative data for program insights.\n• Piloted survey tools and provided field feedback.\n• Ensured data accuracy and followed up on incomplete responses.\n• Reported data collection challenges for timely resolution.\n• Entered data into management systems securely and accurately.\n• Contributed to reports based on field data insights.\n• Participated in debriefing sessions to review data collection progress.', '01-09-2022', '01-09-2023', '1 Year'],
+              ['GFSHO', 'Enumerator', '• Conducted surveys and interviews to collect data for program evaluation.\n• Ensured accurate data collection in line with non-profit objectives.\n• Maintained confidentiality and followed ethical guidelines during data collection.\n• Engaged with communities to gather data on program impact.\n• Assisted in training volunteers for consistent data collection.\n• Helped identify trends and outcomes from collected data.\n• Reported challenges in data collection and offered solutions.\n• Kept detailed records of data collection activities.\n• Collaborated with the team to submit data on time.\n• Shared insights from data collection to improve programs.', '05-09-2023', '16-09-2024', '1 Year'],
+          ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0],
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+      // Languages Section
+      doc.text('Languages:', 13.5, doc.lastAutoTable.finalY + 10);
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          head: [['Languages', 'Speaking', 'Writing', 'Understanding']],
+          body: [
+              ['English', 'TOEFL 115', 'Fluent', 'Excellent', 'Excellent'],
+              ['Dari', 'Native', 'Excellent', 'Excellent'],
+              ['German', 'Good', 'Good', 'Excellent'],
+              ['Pashto', 'Good', 'Good', 'Good']
+          ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+
+      // Skills Section
+      <!-- doc.text('Skills:', 13.5, doc.lastAutoTable.finalY + 10); -->
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          head: [['Skills']],
+          body: [
+              ['Computer Skills: Knowledgeable in various data analysis tools and programming languages, including Python and Java.'],
+              ['Communication: Effective verbal and written communication skills, including the ability to articulate ideas clearly and concisely.'],
+              ['Teamwork: Collaborative mindset with the ability to work effectively in diverse teams and across different levels of an organization.'],
+              ['Problem-solving: Analytical thinking and the ability to assess situations, identify issues, and develop practical solutions.'],
+              ['Time Management: Efficient prioritization and organization of tasks to meet deadlines and achieve goals.'],
+              ['Adaptability: Flexibility to adjust to changing circumstances and willingness to learn new skills and technologies.'],
+              ['Leadership: Capability to take initiative, motivate others, and guide teams toward achieving objectives.'],
+              ['Interpersonal Skills: Ability to build rapport, empathy, and maintain positive relationships with colleagues, clients, and stakeholders.'],
+              ['Attention to Detail: Thoroughness and accuracy in completing tasks and delivering work outputs.'],
+              ['Critical Thinking: Ability to evaluate information objectively, make reasoned judgments, and draw sound conclusions.'],
+              ['Creativity: Thinking outside the box to innovate, problem-solve, and generate new ideas.']
+          ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              showHead: 'firstPage',
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+      // References Section
+      doc.text('References:', 13.5, doc.lastAutoTable.finalY + 10);
+      doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 20,
+          margin: { top: margin, bottom: margin },
+          head: [['Name', 'Organization', 'Job Title', 'Phone', 'Email']],
+          body: [
+              ['Ahmad Seyar Badakhsh', 'VDO', 'HR Officer', '+93796200582', 'vdobadakhsh@gmail.com'],
+              ['Mohammad Naser Rahimi', 'Society Empowerment Organization', 'Provincial Manager', '004915124305773', 'rahimi.seo@gmail.com']
+          ],
+          styles: {
+              font: 'Times New Roman',
+              lineWidth: 0.01,
+              lineColor: [0, 0, 0]
+          },
+          headStyles: {
+              fillColor: [211, 211, 211],
+              textColor: [0, 0, 0],
+              fontStyle: 'bold'
+          },
+          bodyStyles: {
+              fillColor: [255, 255, 255],
+              textColor: [0, 0, 0]
+          },
+          alternateRowStyles: {
+              fillColor: [255, 255, 255]
+          },
+          didDrawCell: function(data) {
+              doc.setLineWidth(0.01);
+              doc.setDrawColor(0, 0, 0);
+              doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+          }
+      });
+
+      return doc.output('arraybuffer');
+    }
+
+    async function createPDFs() {
+      try {
+        updateText()
+        globalPdfLibBytes = await createPDFUsingPdfLib();
+        globalJsPdfBytes = await createPDFUsingJsPDF();
+        mergeAndDownload()
+      } catch (error) {
+        console.error('Error generating PDFs', error);
+        alert('Error generating PDFs');
+      }
+    }
+
+    async function mergeAndDownload() {
+      if (!globalPdfLibBytes || !globalJsPdfBytes) {
+        alert('Please generate the PDFs first by clicking "Generate PDFs"');
+        return;
+      }
+
+      const { PDFDocument } = PDFLib;
+
+      try {
+        const pdfDoc1 = await PDFDocument.load(globalPdfLibBytes);
+        const pdfDoc2 = await PDFDocument.load(globalJsPdfBytes);
+
+        const mergedPdf = await PDFDocument.create();
+
+        const copiedPagesA = await mergedPdf.copyPages(pdfDoc1, pdfDoc1.getPageIndices());
+        copiedPagesA.forEach((page) => mergedPdf.addPage(page));
+
+        const copiedPagesB = await mergedPdf.copyPages(pdfDoc2, pdfDoc2.getPageIndices());
+        copiedPagesB.forEach((page) => mergedPdf.addPage(page));
+
+        const mergedPdfBytes = await mergedPdf.save();
+        downloadPdf(mergedPdfBytes, 'Mohammad Shafih Akbari CV and Cover Letter.pdf');
+      } catch (error) {
+        console.error('Error merging PDFs', error);
+        alert('Error merging PDFs');
+      }
+    }
+
+    function downloadPdf(pdfBytes, filename) {
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+  </script>
+</body>
+</html>
